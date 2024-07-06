@@ -1,0 +1,26 @@
+.cardFeature {
+    flex: 1;
+    padding: 2.5rem;
+
+    &__icon {
+        width: 100px;
+        border: 10px solid #00bc77;
+        border-radius: 50%;
+        padding: 1rem;
+    }
+    &__title {
+        color: #222;
+        font-size: 1.25rem;
+        font-weight: bold;
+
+        margin-block-start: 1em;
+        margin-block-end: 1em;
+
+        margin-bottom: 0.5rem;
+    }
+
+    p {
+        margin-block-start: 1em;
+        margin-block-end: 1em;
+    }
+}
