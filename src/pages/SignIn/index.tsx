@@ -1,13 +1,53 @@
 import '../../scss/pages/signIn.scss'
 import { useNavigate } from 'react-router-dom'
+import { useStore } from 'react-redux'
 
 export default function SignIn() {
     const navigate = useNavigate()
+    const store = useStore()
 
-    const handleConexion = (evt: React.MouseEvent) => {
+    const handleConexion = async (evt: React.MouseEvent) => {
         evt.preventDefault()
-        console.log(evt)
-        navigate('/user')
+        const usernameInput = (
+            document.querySelector('#username') as HTMLInputElement
+        )?.value.toString()
+        const passwordInput = (
+            document.querySelector('#password') as HTMLInputElement
+        )?.value.toString()
+
+        console.log(usernameInput)
+        console.log(passwordInput)
+
+        try {
+            const res = await fetch('http://localhost:3001/api/v1/user/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: usernameInput,
+                    password: passwordInput,
+                }),
+            })
+
+            if (!res.ok) {
+                throw new Error('Network response was not ok')
+            }
+
+            const data = await res.json()
+            const signInPayload = {
+                userusername: usernameInput,
+                token: data.body.token,
+            }
+
+            console.log(data)
+
+            store.dispatch({ type: 'SIGN_IN', payload: signInPayload })
+
+            navigate('/user')
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     return (
