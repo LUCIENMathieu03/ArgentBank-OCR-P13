@@ -4,8 +4,13 @@ import { StateType, ActionType } from './store.type'
 
 const state: StateType = {
     user: {
-        username: '',
-        token: '',
+        userName: undefined,
+        token: undefined,
+    },
+    userProfil: {
+        email: undefined,
+        firstName: undefined,
+        lastName: undefined,
     },
 }
 
@@ -17,6 +22,10 @@ const reducer: Reducer<StateType, ActionType> = (
         case 'SIGN_IN': {
             const userLogged = action.payload
             return { ...currentState, user: userLogged }
+        }
+        case 'ADD_USER_INFO': {
+            const userProfileInfo = action.payload
+            return { ...currentState, userProfil: userProfileInfo }
         }
         default:
             return currentState

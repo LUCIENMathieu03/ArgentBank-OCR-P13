@@ -1,14 +1,60 @@
 import '../../scss/pages/user.scss'
 import AccountCard from '../../components/AccountCard'
+import { useSelector, useStore } from 'react-redux'
+import { getUser, getUserProfil } from '../../state/selector'
+import { useEffect } from 'react'
 
 export default function User() {
+    const store = useStore()
+    const userProfil = useSelector(getUserProfil)
+    const userToken = useSelector(getUser).token
+
+    const fetchUserProfil = async () => {
+        try {
+            const res = await fetch(
+                'http://localhost:3001/api/v1/user/profile',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${userToken}`,
+                    },
+                }
+            )
+
+            if (!res.ok) {
+                throw new Error('Network response was not ok')
+            }
+
+            const data = await res.json()
+            console.log(data)
+
+            const userInfo = {
+                email: data.body.email,
+                firstName: data.body.firstName,
+                lastName: data.body.lastName,
+            }
+
+            store.dispatch({ type: 'ADD_USER_INFO', payload: userInfo })
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    useEffect(() => {
+        if (userToken?.length !== 0) {
+            fetchUserProfil()
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
     return (
         <main className="main bg-dark">
             <div className="header-user">
                 <h1>
                     Welcome back
                     <br />
-                    Tony Jarvis!
+                    {`${userProfil.firstName} ${userProfil.lastName}`}
                 </h1>
                 <button className="header-user__edit-button">Edit Name</button>
             </div>

@@ -8,9 +8,11 @@ export default function SignIn() {
 
     const handleConexion = async (evt: React.MouseEvent) => {
         evt.preventDefault()
+
         const usernameInput = (
             document.querySelector('#username') as HTMLInputElement
         )?.value.toString()
+
         const passwordInput = (
             document.querySelector('#password') as HTMLInputElement
         )?.value.toString()
@@ -36,7 +38,7 @@ export default function SignIn() {
 
             const data = await res.json()
             const signInPayload = {
-                userusername: usernameInput,
+                userName: usernameInput,
                 token: data.body.token,
             }
 
