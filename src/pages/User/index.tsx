@@ -1,12 +1,12 @@
 import '../../scss/pages/user.scss'
 import AccountCard from '../../components/AccountCard'
 import { useSelector, useStore } from 'react-redux'
-import { getUser, getUserProfil } from '../../state/selector'
+import { getUser, getUserProfile } from '../../state/selector'
 import { useEffect } from 'react'
 
 export default function User() {
     const store = useStore()
-    const userProfil = useSelector(getUserProfil)
+    const userProfile = useSelector(getUserProfile)
     const userToken = useSelector(getUser).token
 
     const fetchUserProfil = async () => {
@@ -54,7 +54,7 @@ export default function User() {
                 <h1>
                     Welcome back
                     <br />
-                    {`${userProfil.firstName} ${userProfil.lastName}`}
+                    {`${userProfile.firstName} ${userProfile.lastName}`}
                 </h1>
                 <button className="header-user__edit-button">Edit Name</button>
             </div>

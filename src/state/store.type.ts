@@ -3,14 +3,14 @@ export type StateType = {
         userName: string | undefined
         token: string | undefined
     }
-    userProfil: {
+    userProfile: {
         email: string | undefined
         firstName: string | undefined
         lastName: string | undefined
     }
 }
 
-export type ActionType = SIGN_IN | ADD_USER_INFO
+export type ActionType = SIGN_IN | ADD_USER_INFO | SIGN_OUT
 
 export type ADD_USER_INFO = {
     type: 'ADD_USER_INFO'
@@ -27,4 +27,8 @@ export type SIGN_IN = {
         userName: string
         token: string
     }
+}
+
+export type SIGN_OUT = {
+    type: 'SIGN_OUT'
 }

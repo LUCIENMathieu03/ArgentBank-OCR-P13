@@ -7,7 +7,7 @@ const state: StateType = {
         userName: undefined,
         token: undefined,
     },
-    userProfil: {
+    userProfile: {
         email: undefined,
         firstName: undefined,
         lastName: undefined,
@@ -25,7 +25,21 @@ const reducer: Reducer<StateType, ActionType> = (
         }
         case 'ADD_USER_INFO': {
             const userProfileInfo = action.payload
-            return { ...currentState, userProfil: userProfileInfo }
+            return { ...currentState, userProfile: userProfileInfo }
+        }
+        case 'SIGN_OUT': {
+            return {
+                ...currentState,
+                user: {
+                    userName: undefined,
+                    token: undefined,
+                },
+                userProfile: {
+                    email: undefined,
+                    firstName: undefined,
+                    lastName: undefined,
+                },
+            }
         }
         default:
             return currentState

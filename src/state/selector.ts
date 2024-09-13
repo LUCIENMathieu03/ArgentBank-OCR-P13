@@ -4,6 +4,6 @@ export const getUser = (state: StateType) => {
     return state.user
 }
 
-export const getUserProfil = (state: StateType) => {
-    return state.userProfil
+export const getUserProfile = (state: StateType) => {
+    return state.userProfile
 }
