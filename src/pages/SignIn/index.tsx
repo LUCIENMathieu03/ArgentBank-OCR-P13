@@ -17,9 +17,6 @@ export default function SignIn() {
             document.querySelector('#password') as HTMLInputElement
         )?.value.toString()
 
-        console.log(usernameInput)
-        console.log(passwordInput)
-
         try {
             const res = await fetch('http://localhost:3001/api/v1/user/login', {
                 method: 'POST',
@@ -41,8 +38,6 @@ export default function SignIn() {
                 userName: usernameInput,
                 token: data.body.token,
             }
-
-            console.log(data)
 
             store.dispatch({ type: 'SIGN_IN', payload: signInPayload })
 
