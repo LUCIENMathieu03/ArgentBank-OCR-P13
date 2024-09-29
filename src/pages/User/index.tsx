@@ -3,13 +3,15 @@ import AccountCard from '../../components/AccountCard'
 import { useSelector, useStore } from 'react-redux'
 import { getUser, getUserProfile } from '../../state/selector'
 import { useEffect, useState } from 'react'
+import ErrorMessage from '../../components/ErrorMessage'
 
 export default function User() {
     const store = useStore()
-    const [userEditing, setUserEditing] = useState(false)
     const userProfile = useSelector(getUserProfile)
     const userToken = useSelector(getUser).token
 
+    const [userEditing, setUserEditing] = useState(false)
+    const [inputError, setInputError] = useState(false)
     const [firstNameInput, setFirstNameInputValue] = useState('')
     const [lastNameInput, setLastNameInputValue] = useState('')
 
@@ -64,6 +66,7 @@ export default function User() {
         ).value
 
         if (newFirstName.length !== 0 && newLastName.length !== 0) {
+            setInputError(false)
             try {
                 const res = await fetch(
                     'http://localhost:3001/api/v1/user/profile',
@@ -96,6 +99,8 @@ export default function User() {
                 console.log(error)
             }
             setUserEditing(false)
+        } else {
+            setInputError(true)
         }
     }
 
@@ -106,7 +111,7 @@ export default function User() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    //to fill inputs at initialization
+    //to fill edit's inputs at initialization
     useEffect(() => {
         if (userProfile.firstName && userProfile.lastName) {
             setFirstNameInputValue(userProfile.firstName)
@@ -122,6 +127,10 @@ export default function User() {
                     <br />
                     {userEditing ? (
                         <>
+                            <ErrorMessage
+                                message=" Please fill all fields"
+                                inputError={inputError}
+                            />
                             <form onSubmit={(e) => handleSaveNewName(e)}>
                                 <input
                                     type="text"

@@ -1,10 +1,13 @@
 import '../../scss/pages/signIn.scss'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from 'react-redux'
+import { useState } from 'react'
+import ErrorMessage from '../../components/ErrorMessage'
 
 export default function SignIn() {
     const navigate = useNavigate()
     const store = useStore()
+    const [inputError, setInputError] = useState(false)
 
     const handleConexion = async (evt: React.MouseEvent) => {
         evt.preventDefault()
@@ -30,6 +33,7 @@ export default function SignIn() {
             })
 
             if (!res.ok) {
+                setInputError(true)
                 throw new Error('Network response was not ok')
             }
 
@@ -38,7 +42,7 @@ export default function SignIn() {
                 userName: usernameInput,
                 token: data.body.token,
             }
-
+            setInputError(false)
             store.dispatch({ type: 'SIGN_IN', payload: signInPayload })
 
             navigate('/user')
@@ -52,6 +56,10 @@ export default function SignIn() {
             <section className="signInContainer__content">
                 <i className="fa fa-user-circle  signInContainer__content__icon"></i>
                 <h1>Sign In</h1>
+                <ErrorMessage
+                    message="The username or the password is incorrect"
+                    inputError={inputError}
+                />
                 <form>
                     <div className="signInContainer__content__form__input-wrapper">
                         <label htmlFor="username">Username</label>
