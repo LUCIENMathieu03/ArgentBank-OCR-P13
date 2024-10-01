@@ -1,0 +1,16 @@
+//error message
+.errorMessage {
+    font-size: medium;
+    font-weight: 400;
+    color: lightcoral;
+    animation: slide 300ms ease;
+}
+
+@keyframes slide {
+    0% {
+        transform: translateY(-20px);
+    }
+    100% {
+        transform: translateX(0px);
+    }
+}
