@@ -1,58 +1,29 @@
-import '../../scss/pages/user.scss'
-import AccountCard from '../../components/AccountCard'
 import { useSelector, useStore } from 'react-redux'
 import { getUser, getUserProfile } from '../../state/selector'
 import { useEffect, useState } from 'react'
+import '../../scss/pages/user.scss'
+import AccountCard from '../../components/AccountCard'
 import ErrorMessage from '../../components/ErrorMessage'
+import { editName } from '../../services/services'
 
 export default function User() {
     const store = useStore()
     const userProfile = useSelector(getUserProfile)
     const userToken = useSelector(getUser).token
 
-    const [userEditing, setUserEditing] = useState(false)
-    const [inputError, setInputError] = useState(false)
-    const [firstNameInput, setFirstNameInputValue] = useState('')
-    const [lastNameInput, setLastNameInputValue] = useState('')
-
-    const fetchUserProfil = async () => {
-        try {
-            const res = await fetch(
-                'http://localhost:3001/api/v1/user/profile',
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${userToken}`,
-                    },
-                }
-            )
-
-            if (!res.ok) {
-                throw new Error('Network response was not ok')
-            }
-
-            const data = await res.json()
-
-            const userInfo = {
-                email: data.body.email,
-                firstName: data.body.firstName,
-                lastName: data.body.lastName,
-            }
-
-            store.dispatch({ type: 'ADD_USER_INFO', payload: userInfo })
-        } catch (error) {
-            console.log(error)
-        }
-    }
+    const [isUser, setIsUser] = useState({ editing: false, inputError: false })
+    const [inputValue, setInputValue] = useState({
+        firstName: '',
+        lastName: '',
+    })
 
     const handleEditName = async () => {
-        setUserEditing(true)
+        setIsUser({ ...isUser, editing: true })
     }
 
     const handleCancel = (e: React.MouseEvent) => {
         e.preventDefault()
-        setUserEditing(false)
+        setIsUser({ ...isUser, editing: false })
     }
 
     const handleSaveNewName = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -65,57 +36,39 @@ export default function User() {
             form.elements.namedItem('lastname') as HTMLInputElement
         ).value
 
-        if (newFirstName.length !== 0 && newLastName.length !== 0) {
-            setInputError(false)
-            try {
-                const res = await fetch(
-                    'http://localhost:3001/api/v1/user/profile',
-                    {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            Authorization: `Bearer ${userToken}`,
-                        },
-                        body: JSON.stringify({
-                            firstName: newFirstName,
-                            lastName: newLastName,
-                        }),
-                    }
-                )
-
-                if (!res.ok) {
-                    throw new Error('Network response was not ok')
-                }
-                const data = await res.json()
-                console.log(data)
-
+        if (
+            newFirstName.length !== 0 &&
+            newLastName.length !== 0 &&
+            userToken
+        ) {
+            //Edit user information
+            const nameEddited = await editName(
+                newFirstName,
+                newLastName,
+                userToken
+            )
+            if (nameEddited) {
                 const newUserName = {
                     firstName: newFirstName,
                     lastName: newLastName,
                 }
 
                 store.dispatch({ type: 'ADD_USER_INFO', payload: newUserName })
-            } catch (error) {
-                console.log(error)
+
+                setIsUser({ editing: false, inputError: false })
             }
-            setUserEditing(false)
         } else {
-            setInputError(true)
+            setIsUser({ ...isUser, inputError: true })
         }
     }
 
-    useEffect(() => {
-        if (userToken?.length !== 0) {
-            fetchUserProfil()
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
-
-    //to fill edit's inputs at initialization
+    //fill edit's inputs at initialization
     useEffect(() => {
         if (userProfile.firstName && userProfile.lastName) {
-            setFirstNameInputValue(userProfile.firstName)
-            setLastNameInputValue(userProfile.lastName)
+            setInputValue({
+                firstName: userProfile.firstName,
+                lastName: userProfile.lastName,
+            })
         }
     }, [userProfile])
 
@@ -125,33 +78,35 @@ export default function User() {
                 <h1>
                     Welcome back
                     <br />
-                    {userEditing ? (
+                    {isUser.editing ? (
                         <>
                             <ErrorMessage
                                 message=" Please fill all fields"
-                                inputError={inputError}
+                                inputError={isUser.inputError}
                             />
                             <form onSubmit={(e) => handleSaveNewName(e)}>
                                 <input
                                     type="text"
                                     name="firstname"
                                     placeholder="Firstname"
-                                    value={firstNameInput}
+                                    value={inputValue.firstName}
                                     onInput={(e) =>
-                                        setFirstNameInputValue(
-                                            e.currentTarget.value
-                                        )
+                                        setInputValue({
+                                            ...inputValue,
+                                            firstName: e.currentTarget.value,
+                                        })
                                     }
                                 />
                                 <input
                                     type="text"
                                     name="lastname"
                                     placeholder="Lastname"
-                                    value={lastNameInput}
+                                    value={inputValue.lastName}
                                     onInput={(e) =>
-                                        setLastNameInputValue(
-                                            e.currentTarget.value
-                                        )
+                                        setInputValue({
+                                            ...inputValue,
+                                            lastName: e.currentTarget.value,
+                                        })
                                     }
                                 />
                                 <br />

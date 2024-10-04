@@ -1,8 +1,9 @@
-import '../../scss/pages/signIn.scss'
 import { useNavigate } from 'react-router-dom'
 import { useStore } from 'react-redux'
 import { useState } from 'react'
+import '../../scss/pages/signIn.scss'
 import ErrorMessage from '../../components/ErrorMessage'
+import { connexion, fetchUserProfil } from '../../services/services.ts'
 
 export default function SignIn() {
     const navigate = useNavigate()
@@ -20,34 +21,33 @@ export default function SignIn() {
             document.querySelector('#password') as HTMLInputElement
         )?.value.toString()
 
-        try {
-            const res = await fetch('http://localhost:3001/api/v1/user/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    email: usernameInput,
-                    password: passwordInput,
-                }),
-            })
-
-            if (!res.ok) {
-                setInputError(true)
-                throw new Error('Network response was not ok')
-            }
-
-            const data = await res.json()
+        //create the connection
+        const connexionData = await connexion(usernameInput, passwordInput)
+        if (connexionData) {
             const signInPayload = {
                 userName: usernameInput,
-                token: data.body.token,
+                token: connexionData.body.token,
             }
-            setInputError(false)
             store.dispatch({ type: 'SIGN_IN', payload: signInPayload })
+            setInputError(false)
+
+            //fetch user information
+            const fetchUserData = await fetchUserProfil(
+                connexionData.body.token
+            )
+            if (fetchUserData) {
+                const userInfo = {
+                    email: fetchUserData.body.email,
+                    firstName: fetchUserData.body.firstName,
+                    lastName: fetchUserData.body.lastName,
+                }
+
+                store.dispatch({ type: 'ADD_USER_INFO', payload: userInfo })
+            }
 
             navigate('/user')
-        } catch (error) {
-            console.log(error)
+        } else {
+            setInputError(true)
         }
     }
 
