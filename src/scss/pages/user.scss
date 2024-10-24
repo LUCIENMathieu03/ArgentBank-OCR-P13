@@ -47,3 +47,23 @@
         }
     }
 }
+
+@media (max-width: 720px) {
+    .header-user {
+        & form {
+            & > div {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+
+                align-items: center;
+            }
+            & input {
+                max-width: 350px;
+                &:first-child {
+                    margin-right: 0px;
+                }
+            }
+        }
+    }
+}

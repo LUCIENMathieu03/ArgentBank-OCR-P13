@@ -1,16 +1,18 @@
 import { Link } from 'react-router-dom'
-import { useSelector, useStore } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import '../scss/layouts/header.scss'
 import argentBankLogo from '../assets/img/argentBankLogo.png'
-import { getUser, getUserProfile } from '../state/selector'
+import { getUser, getUserProfile } from '../redux/selector'
+import { AppDispatch } from '../redux/store'
+import { authSlice } from '../redux/reducer'
 
 export default function Header() {
-    const store = useStore()
-    const isUserSignin = !!useSelector(getUser).token
+    const isUserLogin = !!useSelector(getUser).token
     const userInfo = useSelector(getUserProfile)
+    const dispatch = useDispatch<AppDispatch>()
 
     const handleSignOut = () => {
-        store.dispatch({ type: 'SIGN_OUT' })
+        dispatch(authSlice.actions.logOut())
     }
 
     return (
@@ -23,12 +25,12 @@ export default function Header() {
                 />
                 <h1 className="sr-only">Argent Bank</h1>
             </Link>
-            <div>
-                {isUserSignin ? (
+            <div className="header__items">
+                {isUserLogin ? (
                     <>
                         <Link
                             className="header__link header__linkItem"
-                            to="/User"
+                            to="/Profile"
                         >
                             <i className="fa fa-user-circle"></i>
                             {` ${userInfo.firstName} `}
@@ -44,10 +46,7 @@ export default function Header() {
                         </Link>
                     </>
                 ) : (
-                    <Link
-                        className="header__link header__linkItem"
-                        to="/signIn"
-                    >
+                    <Link className="header__link header__linkItem" to="/login">
                         <i className="fa fa-user-circle"></i>
                         {` Sign In`}
                     </Link>

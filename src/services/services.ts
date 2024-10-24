@@ -1,6 +1,6 @@
 import { ConnexionResponseType, FetchUserProfilType } from './services.type'
 
-export async function connexion(
+export async function connexionApi(
     usernameInput: string,
     passwordInput: string
 ): Promise<ConnexionResponseType | false> {
@@ -28,7 +28,7 @@ export async function connexion(
     }
 }
 
-export const fetchUserProfil = async (
+export const fetchUserProfileApi = async (
     userToken: string
 ): Promise<FetchUserProfilType | false> => {
     try {
@@ -53,7 +53,7 @@ export const fetchUserProfil = async (
     }
 }
 
-export const editName = async (
+export const editNameApi = async (
     newFirstName: string,
     newLastName: string,
     userToken: string
