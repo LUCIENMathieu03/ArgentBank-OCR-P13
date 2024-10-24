@@ -1,0 +1,204 @@
+openapi: 3.0.3
+info:
+    title: Bank Argent API documentation - Transaction
+    description: Contains all API endpoint for the transaction
+    version: 1.0.0
+servers:
+    - url: localhost:3001/api/v2
+tags:
+    - name: Transactions
+      description: Acces to account informations
+paths:
+    /transactions:
+        get:
+            tags:
+                - Transactions
+            summary: Transactions
+            description: Recover all transaction of a user grouped by account
+            operationId: getTransactions
+            parameters:
+                - name: Authorization
+                  in: header
+                  description: Attach Bearer JWT token
+                  required: true
+                  schema:
+                      type: string
+            responses:
+                '200':
+                    description: Successful operation
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: '#/components/schemas/transactions'
+                        application/xml:
+                            schema:
+                                $ref: '#/components/schemas/transactions'
+                '401':
+                    description: Unauthorized
+                '404':
+                    description: Not found
+                '500':
+                    description: Internal server error
+            security:
+                - Bearer: []
+
+    /transactions/{id}:
+        get:
+            tags:
+                - Transactions
+            summary: Transaction infomations
+            description: Retrieve all informations of a transaction
+            operationId: getTransactionInfo
+            parameters:
+                - name: Authorization
+                  in: header
+                  description: Attach Bearer JWT token
+                  required: true
+                  schema:
+                      type: string
+
+                - name: id
+                  in: path
+                  description: ID of a transaction
+                  schema:
+                      type: string
+                  required: true
+            responses:
+                '200':
+                    description: Successful operation
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/transactionInfo'
+                        application/xml:
+                            schema:
+                                $ref: '#/components/schemas/transactionInfo'
+                '400':
+                    description: Invalid ID supplied
+                '401':
+                    description: Unauthorized
+                '404':
+                    description: Not found
+                '500':
+                    description: Internal server error
+            security:
+                - Bearer: []
+
+        put:
+            tags:
+                - Transactions
+            summary: Transaction's information modification
+            description: Add or modify the category or note of a transaction, based on the query parameter.
+            operationId: modifyTransaction
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  description: ID of the transaction to updated
+                  schema:
+                      type: string
+                - name: Authorization
+                  in: header
+                  required: true
+                  description: Bearer JWT token
+                  schema:
+                      type: string
+                - name: modify
+                  in: query
+                  required: true
+                  description: Specify whether to modify 'category' or 'note'
+                  schema:
+                      type: string
+            requestBody:
+                description: Depending on the query parameter, either the category or note will be updated.
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                category:
+                                    type: string
+                                    example: 'Food'
+                                note:
+                                    type: string
+                                    example: 'This is a note for the transaction.'
+            responses:
+                '200':
+                    description: Transaction updated successfully
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UpdateResponse'
+                '400':
+                    description: Invalid input or ID
+                '401':
+                    description: Unauthorized
+                '404':
+                    description: Not found
+                '500':
+                    description: Internal server error
+            security:
+                - Bearer: []
+components:
+    schemas:
+        transactions:
+            type: object
+            properties:
+                id:
+                    type: string
+                    example: '1'
+                balance:
+                    type: string
+                    example: '2082.79'
+                accountName:
+                    type: string
+                    example: Argent Bank Checking (x8349)
+                transactions:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/transactionInfo'
+        transactionInfo:
+            type: object
+            properties:
+                id:
+                    type: string
+                    example: '1'
+                date:
+                    type: string
+                    example: '10/10/2024'
+                description:
+                    type: string
+                    example: Golden Sun Bakery
+                amount:
+                    type: string
+                    example: '50.00'
+                balance:
+                    type: string
+                    example: '2187.79'
+                transaction type:
+                    type: string
+                    example: Electronic
+                category:
+                    type: string
+                    example: Food
+                note:
+                    type: string
+                    example: For me and friends
+        UpdateResponse:
+            type: object
+            properties:
+                status:
+                    type: integer
+                    format: int32
+                message:
+                    type: string
+            xml:
+                name: '##default'
+    securitySchemes:
+        Bearer:
+            type: apiKey
+            name: Authorization
+            in: header

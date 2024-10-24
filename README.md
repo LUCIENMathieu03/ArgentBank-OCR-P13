@@ -1,30 +1,10 @@
-# React + TypeScript + Vite
+# ArgentBank-OCR-P13
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Utilisez une API pour un compte utilisateur bancaire avec React
 
-Currently, two official plugins are available:
+Pour utiliser ce projet vous devez mettre en place le backend disponible a cette addresse: 
+https://github.com/OpenClassrooms-Student-Center/Project-10-Bank-API/tree/master
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Pour l'installer le backend avec docker n'hésitez pas à vous aidez de cette issue :
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+https://github.com/OpenClassrooms-Student-Center/Project-10-Bank-API/issues/36

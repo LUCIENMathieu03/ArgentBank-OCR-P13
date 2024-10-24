@@ -1,13 +1,19 @@
-import { useSelector, useStore } from 'react-redux'
-import { getUser, getUserProfile } from '../../state/selector'
+import { useDispatch, useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+
 import '../../scss/pages/user.scss'
+import { getUser, getUserProfile } from '../../redux/selector'
+import { AppDispatch } from '../../redux/store'
+
 import AccountCard from '../../components/AccountCard'
 import ErrorMessage from '../../components/ErrorMessage'
-import { editName } from '../../services/services'
+import { editName } from '../../redux/actions/actions'
 
-export default function User() {
-    const store = useStore()
+export default function Profile() {
+    const dispatch = useDispatch<AppDispatch>()
+    const navigate = useNavigate()
+    const user = useSelector(getUser)
     const userProfile = useSelector(getUserProfile)
     const userToken = useSelector(getUser).token
 
@@ -41,26 +47,24 @@ export default function User() {
             newLastName.length !== 0 &&
             userToken
         ) {
-            //Edit user information
-            const nameEddited = await editName(
-                newFirstName,
-                newLastName,
-                userToken
+            const resultEdit = await dispatch(
+                editName({ newFirstName, newLastName, token: userToken })
             )
-            if (nameEddited) {
-                const newUserName = {
-                    firstName: newFirstName,
-                    lastName: newLastName,
-                }
-
-                store.dispatch({ type: 'ADD_USER_INFO', payload: newUserName })
-
+            if (editName.fulfilled.match(resultEdit)) {
                 setIsUser({ editing: false, inputError: false })
+            } else {
+                setIsUser({ ...isUser, inputError: true }) // cas ou la requette renvoie une erreur
             }
         } else {
             setIsUser({ ...isUser, inputError: true })
         }
     }
+
+    useEffect(() => {
+        if (!user.token) {
+            navigate('/login')
+        }
+    })
 
     //fill edit's inputs at initialization
     useEffect(() => {
@@ -85,31 +89,34 @@ export default function User() {
                                 inputError={isUser.inputError}
                             />
                             <form onSubmit={(e) => handleSaveNewName(e)}>
-                                <input
-                                    type="text"
-                                    name="firstname"
-                                    placeholder="Firstname"
-                                    value={inputValue.firstName}
-                                    onInput={(e) =>
-                                        setInputValue({
-                                            ...inputValue,
-                                            firstName: e.currentTarget.value,
-                                        })
-                                    }
-                                />
-                                <input
-                                    type="text"
-                                    name="lastname"
-                                    placeholder="Lastname"
-                                    value={inputValue.lastName}
-                                    onInput={(e) =>
-                                        setInputValue({
-                                            ...inputValue,
-                                            lastName: e.currentTarget.value,
-                                        })
-                                    }
-                                />
-                                <br />
+                                <div>
+                                    <input
+                                        type="text"
+                                        name="firstname"
+                                        placeholder="Firstname"
+                                        value={inputValue.firstName}
+                                        onInput={(e) =>
+                                            setInputValue({
+                                                ...inputValue,
+                                                firstName:
+                                                    e.currentTarget.value,
+                                            })
+                                        }
+                                    />
+                                    <input
+                                        type="text"
+                                        name="lastname"
+                                        placeholder="Lastname"
+                                        value={inputValue.lastName}
+                                        onInput={(e) =>
+                                            setInputValue({
+                                                ...inputValue,
+                                                lastName: e.currentTarget.value,
+                                            })
+                                        }
+                                    />
+                                </div>
+
                                 <button className="header-user__edit-button">
                                     Save
                                 </button>
