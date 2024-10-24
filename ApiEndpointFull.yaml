@@ -171,7 +171,7 @@ paths:
                 '200':
                     description: Successful operation
                     schema:
-                        $ref: '#/definitions/transactionInfo'
+                        $ref: '#/definitions/transactionDetails'
                 '400':
                     description: Invalid ID supplied
                 '401':
@@ -284,10 +284,10 @@ definitions:
     transactions:
         type: object
         properties:
-            id:
+            accountId:
                 type: string
                 example: '1'
-            balance:
+            accountBalance:
                 type: string
                 example: '2082.79'
             accountName:
@@ -298,6 +298,24 @@ definitions:
                 items:
                     $ref: '#/definitions/transactionInfo'
     transactionInfo:
+        type: object
+        properties:
+            id:
+                type: string
+                example: '1'
+            date:
+                type: string
+                example: '10/10/2024'
+            description:
+                type: string
+                example: Golden Sun Bakery
+            amount:
+                type: string
+                example: '50.00'
+            balance:
+                type: string
+                example: '2187.79'
+    transactionDetails:
         type: object
         properties:
             id:
